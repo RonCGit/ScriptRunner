@@ -1,0 +1,37 @@
+import com.atlassian.jira.ComponentAccessor
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.ComponentManager
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.issue.IssueManager
+import com.atlassian.jira.issue.Issue
+import com.onresolve.scriptrunner.runner.util.UserMessageUtil
+
+
+// Retrieve the values from the custom fields RR,TC,BV,JS. The numbers are the jira internal ID's.
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager()
+CustomField bvField = customFieldManager.getCustomFieldObject("customfield_20235");
+CustomField tcField = customFieldManager.getCustomFieldObject("customfield_20234");
+CustomField rrField = customFieldManager.getCustomFieldObject("customfield_20236");
+CustomField jsField = customFieldManager.getCustomFieldObject("customfield_20237");
+
+// Convert the fields to string
+String bvValue = issue.getCustomFieldValue(bvField).toString();
+String tcValue = issue.getCustomFieldValue(tcField).toString();
+String rrValue = issue.getCustomFieldValue(rrField).toString();
+String jsValue = issue.getCustomFieldValue(jsField).toString();
+
+// Then convert to Integers
+int jsInt = Integer.parseInt(jsValue);
+int rrInt = Integer.parseInt(rrValue);
+int tcInt = Integer.parseInt(tcValue);
+int bvInt = Integer.parseInt(bvValue);
+ 
+// Do the math
+if (null != rrInt && null != bvInt && null != tcInt && null != jsInt) {
+def total = (bvInt + tcInt + rrInt) / jsInt
+return total
+}
+else {
+    UserMessageUtil.error("Please populate all of the fields to calculate WSJF")
+}
